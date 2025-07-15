@@ -26,10 +26,11 @@ void traversal(LinkedList list, bool reverse)
 {
     if (!reverse)
     {
-        while (list.head != NULL)
+        Node *current = list.head;
+        while (current != NULL)
         {
-            printf("%d\n", list.head->data);
-            list.head = list.head->next;
+            printf("%d\n", current->data);
+            current = current->next;
         }
     }
     else
@@ -37,10 +38,11 @@ void traversal(LinkedList list, bool reverse)
         MyArray array;
         CreateArray(&array, list.size, list.size);
         int i = list.size - 1;
-        while (list.head != NULL)
+        Node *current = list.head;
+        while (current != NULL)
         {
-            insertAt(&array, list.head->data, i, true, false);
-            list.head = list.head->next;
+            insertAt(&array, current->data, i, true, false);
+            current = current->next;
             i--;
         }
         showArray(&array);
@@ -50,17 +52,21 @@ void traversal(LinkedList list, bool reverse)
 
 void createNode(LinkedList *list, int data)
 {
-    Node *node1 = (struct Node *)malloc(sizeof(Node));
-    node1->data = data;
-    node1->next = NULL;
+    Node *node = (Node *)malloc(sizeof(Node));
+    if (node == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    node->data = data;
+    node->next = NULL;
     if (list->head == NULL)
     {
-        list->head = list->tail = node1;
+        list->head = list->tail = node;
     }
     else
     {
-        list->tail->next = node1;
-        list->tail = node1;
+        list->tail->next = node;
+        list->tail = node;
     }
     list->size++;
 }
@@ -76,7 +82,11 @@ void insertNode(LinkedList *list, int data, int index, bool insertAtBegin)
         printf("invalid index\n");
         return;
     }
-    struct Node *ptr = (struct Node *)malloc(sizeof(Node));
+    Node *ptr = (Node *)malloc(sizeof(Node));
+    if (ptr == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
     ptr->data = data;
     if (insertAtBegin)
     {
@@ -91,7 +101,6 @@ void insertNode(LinkedList *list, int data, int index, bool insertAtBegin)
     {
         Node *p = list->head;
         int i = 0;
-
         while (i != index - 1 && p != NULL)
         {
             p = p->next;
@@ -99,9 +108,9 @@ void insertNode(LinkedList *list, int data, int index, bool insertAtBegin)
         }
         ptr->next = p->next;
         p->next = ptr;
-        if (p->next == NULL)
+        if (ptr->next == NULL)
         {
-            list->tail = p;
+            list->tail = ptr;
         }
     }
     list->size++;
